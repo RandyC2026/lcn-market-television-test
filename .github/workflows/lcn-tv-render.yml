@@ -1,0 +1,43 @@
+name: LCN Market Television test encoder
+
+on:
+  push:
+    branches: [main, lcn-tv-test]
+    paths: ['tv-render/**', '.github/workflows/lcn-tv-render.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: lcn-market-television-render
+  cancel-in-progress: false
+
+jobs:
+  render-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tv-render/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tv-render/requirements.txt
+      - run: npm ci --prefix tv-render
+      - run: python -m pip install -r tv-render/requirements.txt
+      - name: Render HLS from sanitized quote snapshots
+        run: |
+          set -euo pipefail
+          export CHROME_PATH="$(command -v google-chrome)"
+          node tv-render/capture.mjs tv-render/feed.json tv-render/template.html tv-render/frames
+          python tv-render/render.py tv-render/feed.json tv-render/frames tv-render/hls
+          test "$(grep -c '^#EXTINF:' tv-render/hls/batch.m3u8)" -eq 6
+      - name: Publish the completed batch
+        run: python tv-render/upload.py tv-render/feed.json tv-render/hls

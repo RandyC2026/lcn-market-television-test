@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LCN Market Television — TEST</title>
+  <style>
+    :root { --navy:#071114; --blue:#1a2b31; --gold:#c9a85a; --paper:#d8d7c8; --green:#7ce08a; --red:#ee8175; --amber:#e3bc62; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; background:#02070b; color:var(--paper); font-family:Arial,Helvetica,sans-serif; }
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#000; }
+    .screen { width:min(calc(100vw - 24px), calc((100vh - 24px) * 1.7778), 1280px); aspect-ratio:16/9; background:linear-gradient(#17282a,#0d1718); position:relative; overflow:hidden; border:12px solid #111; box-shadow:0 0 0 2px #58605b, 0 0 60px #000; }
+    .scanlines { pointer-events:none; position:absolute; inset:0; z-index:5; background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.12) 4px); mix-blend-mode:multiply; }
+    header { height:14%; padding:1.5% 2.5% .8%; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:1fr 1fr; column-gap:2%; align-items:center; border-bottom:3px solid #d8d3b3; background:#081012; }
+    .brand { grid-column:1; grid-row:1 / 3; }
+    .brand { color:#f2eee0; font:900 clamp(22px,4.2vw,58px)/.88 Georgia,serif; letter-spacing:-2px; text-shadow:3px 3px #000; }
+    .brand small { display:block; color:#b5b9aa; font:bold clamp(8px,1.1vw,15px)/1.5 Arial,sans-serif; letter-spacing:4px; margin-top:8px; }
+    .status { grid-column:2; grid-row:1; text-align:right; white-space:nowrap; font:bold clamp(9px,1.1vw,15px)/1.4 Arial,sans-serif; color:var(--green); letter-spacing:1px; }
+    .status span { display:block; color:#a8bdc8; font-weight:normal; letter-spacing:0; }
+    main { height:62%; padding:1.5% 2.5% 0; display:grid; grid-template-columns:minmax(0,1fr) 25%; gap:1.5%; overflow:hidden; background:radial-gradient(ellipse at 45% 50%,#40534d 0,#1c2c2c 42%,#081012 100%); }
+    .headline { align-self:stretch; position:relative; min-width:0; overflow:hidden; padding:2.5% 3%; display:flex; flex-direction:column; justify-content:center; border:1px solid #66736c; background:linear-gradient(145deg,rgba(38,62,57,.75),rgba(5,12,14,.88)); box-shadow:inset 0 0 35px #000; }
+    .headline:before { content:'LCN MARKET TELEVISION  •  FLOOR REPORT'; position:absolute; top:3%; left:3%; color:#dcd7ae; font:bold clamp(9px,1vw,14px)/1 'Courier New',monospace; letter-spacing:2px; }
+    .eyebrow { color:var(--amber); font:bold clamp(12px,1.5vw,21px)/1 'Courier New',monospace; letter-spacing:2px; margin-bottom:2%; }
+    h1 { margin:0; max-width:780px; color:#fff; font:900 clamp(24px,3.1vw,43px)/1.04 Georgia,serif; text-shadow:4px 4px #000; }
+    .deck { max-width:690px; margin-top:2.5%; color:#d0d2c2; font:clamp(12px,1.15vw,16px)/1.2 Georgia,serif; }
+    .board { align-self:stretch; background:rgba(2,7,7,.78); border:2px solid #8d9381; padding:4%; box-shadow:inset 0 0 25px #000, 0 0 0 5px rgba(0,0,0,.25); }
+    .board h2 { margin:0 0 4%; padding:2% 0; text-align:center; color:#071010; background:#d4d0aa; font:bold clamp(12px,1.25vw,18px)/1 'Arial',sans-serif; letter-spacing:1px; border:2px solid #777863; }
+    table { width:100%; border-collapse:collapse; font:bold clamp(13px,1.7vw,22px)/1.8 'Courier New',monospace; text-shadow:0 0 5px currentColor; }
+    th { color:#9da79a; font-size:.72em; text-align:left; text-shadow:none; }
+    th:not(:first-child), td:not(:first-child) { text-align:right; }
+    td { border-bottom:1px dotted #4e5b52; }
+    .up { color:var(--green); } .down { color:var(--red); }
+    footer { position:absolute; bottom:0; left:0; right:0; height:24%; background:#081011; border-top:3px solid #d5d0a5; }
+    .ticker { height:58%; overflow:hidden; white-space:nowrap; display:flex; align-items:center; background:#020606; color:#eee9ce; font:bold clamp(15px,2vw,28px)/1 'Courier New',monospace; }
+    .ticker-track { display:inline-block; padding-left:100%; animation:scroll 30s linear infinite; }
+    .ticker-track b { color:var(--gold); margin:0 12px; } .ticker-track i { color:#9cb4c0; font-style:normal; margin-right:40px; }
+    .clock { height:42%; display:flex; align-items:center; justify-content:space-between; padding:0 3%; color:#9fa99e; font:bold clamp(9px,1vw,14px)/1 'Courier New',monospace; letter-spacing:1px; }
+    .topnews { margin:0 0 2%; padding-bottom:1%; color:#e6e3ce; border-bottom:1px solid #687267; font:bold clamp(10px,.9vw,13px)/1.1 Arial,sans-serif; }
+    .topnews:last-child { border-bottom:0; }
+    .topnews strong { display:block; color:#090f10; background:#d4d0aa; padding:2% 3%; margin-bottom:4%; font:bold clamp(12px,1.2vw,17px)/1 Arial,sans-serif; letter-spacing:1px; }
+    .ledbar { grid-column:2; grid-row:2; max-width:46vw; overflow:hidden; color:#68e46f; font:bold clamp(8px,.9vw,13px)/1 'Courier New',monospace; letter-spacing:1px; text-shadow:0 0 8px #3edc4e; opacity:.9; white-space:nowrap; }
+    .clock strong { color:var(--green); }
+    @keyframes scroll { to { transform:translateX(-100%); } }
+    @media (max-width:700px) { .screen { border-width:4px; } main { grid-template-columns:1fr; gap:0; padding-top:4%; } .board { display:none; } .headline { align-self:center; } header { height:16%; } footer { height:22%; } }
+  </style>
+</head>
+<body>
+  <section class="screen" aria-label="LCN Market Television test broadcast">
+    <header><div class="brand">LCN<small>EXCHANGE FLOOR • LIBERTY CITY</small></div><div class="ledbar">LCE 84.25 ▲1.03   VCT 51.60 ▼0.42   AMN 118.40 ▲0.77   BLS 37.80 ▲0.18</div><div class="status">● TEST MODE<span id="updated">UPDATING EVERY 10 SECONDS</span></div></header>
+    <main><article class="headline"><div class="eyebrow" id="eyebrow">MARKET DESK / 01</div><h1 id="headline">Opening bell holds as Liberty City traders watch the morning tape.</h1><p class="deck" id="deck">Mock broadcast data only. No LCN orders, balances, market state, Discord, or financial records are connected.</p></article><aside class="board"><h2>TOP NEWS</h2><div class="topnews"><strong>MARKET</strong> Transit names lead a cautious afternoon bid.</div><div class="topnews"><strong>BUSINESS</strong> Regional banks hold steady at the opening bell.</div><div class="topnews"><strong>WORLD</strong> Commodities turn mixed in early trading.</div><h2>SELECTED QUOTES</h2><table><thead><tr><th>SYMBOL</th><th>LAST</th><th>CHG</th></tr></thead><tbody id="quotes"></tbody></table></aside></main>
+    <footer><div class="ticker"><div class="ticker-track" id="ticker"></div></div><div class="clock"><span>LCN-TV / FINANCIAL NEWS SERVICE</span><strong id="clock">TEST CLOCK 09:30:00</strong><span>NOT A LIVE MARKET FEED</span></div></footer><div class="scanlines"></div>
+  </section>
+  <script>
+    const symbols = [{s:'LCE',n:'Liberty City Electric',p:84.25},{s:'VCT',n:'Vice City Transit',p:51.60},{s:'AMN',n:'Ammu-Nation',p:118.40},{s:'BLS',n:'Blaine Savings',p:37.80},{s:'KHP',n:'Kauai Health',p:72.15},{s:'RMC',n:'Raton Mining',p:29.45}];
+    const stories = [
+      ['MARKET DESK / 01','Opening bell holds as Liberty City traders watch the morning tape.','A quiet start gives desk analysts room to watch transportation, utilities, and regional banking.'],
+      ['MARKET DESK / 02','Transit names lead a cautious afternoon bid.','Volume remains simulated for this owner-only test; every quote below is generated in the browser.'],
+      ['MARKET DESK / 03','Banking shares steady while commodities turn mixed.','The display proves the television layout and timed refresh loop without touching production systems.']
+    ];
+    let tick=0, story=0;
+    function money(v){return '$'+v.toFixed(2)}
+    function render(){
+      symbols.forEach((x,i)=>{ x.p += ((Math.sin(tick*.8+i*1.7)*.42)+(Math.random()-.5)*.16); x.m = Math.sin(tick*.8+i*1.7)*1.6; });
+      document.getElementById('quotes').innerHTML=symbols.slice(0,5).map(x=>`<tr><td>${x.s}</td><td>${money(x.p)}</td><td class="${x.m>=0?'up':'down'}">${x.m>=0?'▲':'▼'} ${Math.abs(x.m).toFixed(2)}%</td></tr>`).join('');
+      document.getElementById('ticker').innerHTML=symbols.map(x=>`<b>${x.s}</b> ${money(x.p)} <span class="${x.m>=0?'up':'down'}">${x.m>=0?'+':''}${x.m.toFixed(2)}%</span><i>◆</i>`).join('');
+      const s=stories[story%stories.length]; document.getElementById('eyebrow').textContent=s[0]; document.getElementById('headline').textContent=s[1]; document.getElementById('deck').textContent=s[2];
+      document.getElementById('updated').textContent='LAST MOCK UPDATE '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      tick++; story++;
+    }
+    function clock(){ const t=new Date(); document.getElementById('clock').textContent='TEST CLOCK '+t.toLocaleTimeString([], {hour12:false}); }
+    render(); clock(); setInterval(render,10000); setInterval(clock,1000);
+  </script>
+</body>
+</html>

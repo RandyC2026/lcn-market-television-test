@@ -1,0 +1,4 @@
+tv-render/node_modules/
+tv-render/frames/
+tv-render/hls/
+*.pyc
