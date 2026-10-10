@@ -7,14 +7,19 @@ import sys
 import time
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 SITE = 'https://lcn-market-television-hls.sturdyrain.chatgpt.site'
 AUDIENCE = 'lcn-market-television-publisher'
 
 
 def request(url, method='GET', data=None, headers=None):
-    with urlopen(Request(url, data=data, method=method, headers=headers or {}), timeout=30) as response:
-        return response.read()
+    try:
+        with urlopen(Request(url, data=data, method=method, headers=headers or {}), timeout=30) as response:
+            return response.read()
+    except HTTPError as error:
+        body = error.read(512).decode('utf-8', errors='replace')
+        raise RuntimeError(f'{method} {url.split("?")[0]} returned HTTP {error.code}: {body}') from None
 
 
 def main():
