@@ -15,7 +15,8 @@ AUDIENCE = 'lcn-market-television-publisher'
 
 def request(url, method='GET', data=None, headers=None):
     try:
-        with urlopen(Request(url, data=data, method=method, headers=headers or {}), timeout=30) as response:
+        request_headers = {'User-Agent': 'LCN-TV-Test/1.0', **(headers or {})}
+        with urlopen(Request(url, data=data, method=method, headers=request_headers), timeout=30) as response:
             return response.read()
     except HTTPError as error:
         body = error.read(512).decode('utf-8', errors='replace')
